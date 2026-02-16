@@ -16,7 +16,8 @@ export const Settings = () => {
         // Check for Share API support (Mobile)
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'study_backup.json', { type: 'application/json' })] })) {
             try {
-                const file = new File([blob], \`studylog_backup_\${new Date().toISOString().split('T')[0]}.studylog.json\`, { type: 'application/json' });
+                const fileName = 'studylog_backup_' + new Date().toISOString().split('T')[0] + '.studylog.json';
+                const file = new File([blob], fileName, { type: 'application/json' });
                 await navigator.share({
                     files: [file],
                     title: 'StudyLog Backup',
@@ -30,7 +31,7 @@ export const Settings = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = \`studylog_backup_\${new Date().toISOString().split('T')[0]}.studylog.json\`;
+        a.download = 'studylog_backup_' + new Date().toISOString().split('T')[0] + '.studylog.json';
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -80,10 +81,10 @@ export const Settings = () => {
                 <div className="profile-setting">
                     {isNameEditing ? (
                         <div className="name-edit">
-                            <input 
-                                type="text" 
-                                value={userName} 
-                                onChange={e => setUserName(e.target.value)} 
+                            <input
+                                type="text"
+                                value={userName}
+                                onChange={e => setUserName(e.target.value)}
                             />
                             <button onClick={handleNameSave} className="btn-save">保存</button>
                         </div>
@@ -101,10 +102,10 @@ export const Settings = () => {
                 <div className="theme-setting">
                     <span>ダークモード</span>
                     <label className="switch">
-                        <input 
-                            type="checkbox" 
-                            checked={data.themeMode === 'dark'} 
-                            onChange={toggleTheme} 
+                        <input
+                            type="checkbox"
+                            checked={data.themeMode === 'dark'}
+                            onChange={toggleTheme}
                         />
                         <span className="slider round"></span>
                     </label>
@@ -145,158 +146,158 @@ export const Settings = () => {
             </div>
 
             <style>{`
-                    .page - container {
-                        padding: var(--spacing - md);
-                max - width: 600px;
-                margin: 0 auto;
-                padding - bottom: 80px;
-            }
-                .settings - section {
-    background: var(--color - bg - card);
-    padding: var(--spacing - md);
-    border - radius: var(--radius - md);
-    margin - bottom: var(--spacing - md);
-    box - shadow: var(--shadow - sm);
-}
-                .settings - section h3 {
-    font - size: var(--font - size - md);
-    margin - bottom: var(--spacing - sm);
-    border - bottom: 1px solid var(--color - border);
-    padding - bottom: 8px;
-}
-                .profile - setting, .theme - setting {
-    display: flex;
-    justify - content: space - between;
-    align - items: center;
-    min - height: 40px;
-}
-                .name - display {
-    display: flex;
-    align - items: center;
-    gap: var(--spacing - md);
-    width: 100 %;
-    justify - content: space - between;
-}
-                .name - edit {
-    display: flex;
-    gap: 8px;
-    width: 100 %;
-}
-                .name - edit input {
-    flex: 1;
-    padding: 8px;
-    border - radius: var(--radius - sm);
-    border: 1px solid var(--color - border);
-    font - size: var(--font - size - base);
-    background: var(--color - bg - base);
-    color: var(--color - text - main);
-}
-                .btn - save {
-    background: var(--color - primary);
-    color: white;
-    border: none;
-    padding: 4px 12px;
-    border - radius: var(--radius - sm);
-    cursor: pointer;
-}
-                .btn - edit {
-    background: none;
-    border: 1px solid var(--color - border);
-    padding: 4px 12px;
-    border - radius: var(--radius - sm);
-    font - size: var(--font - size - sm);
-    cursor: pointer;
-    color: var(--color - text - main);
-}
-
+                .page-container {
+                    padding: var(--spacing-md);
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding-bottom: 80px; 
+                }
+                .settings-section {
+                    background: var(--color-bg-card);
+                    padding: var(--spacing-md);
+                    border-radius: var(--radius-md);
+                    margin-bottom: var(--spacing-md);
+                    box-shadow: var(--shadow-sm);
+                }
+                .settings-section h3 {
+                    font-size: var(--font-size-md);
+                    margin-bottom: var(--spacing-sm);
+                    border-bottom: 1px solid var(--color-border);
+                    padding-bottom: 8px;
+                }
+                .profile-setting, .theme-setting {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    min-height: 40px;
+                }
+                .name-display {
+                    display: flex;
+                    align-items: center;
+                    gap: var(--spacing-md);
+                    width: 100%;
+                    justify-content: space-between;
+                }
+                .name-edit {
+                    display: flex;
+                    gap: 8px;
+                    width: 100%;
+                }
+                .name-edit input {
+                    flex: 1;
+                    padding: 8px;
+                    border-radius: var(--radius-sm);
+                    border: 1px solid var(--color-border);
+                    font-size: var(--font-size-base);
+                    background: var(--color-bg-base);
+                    color: var(--color-text-main);
+                }
+                .btn-save {
+                    background: var(--color-primary);
+                    color: white;
+                    border: none;
+                    padding: 4px 12px;
+                    border-radius: var(--radius-sm);
+                    cursor: pointer;
+                }
+                .btn-edit {
+                    background: none;
+                    border: 1px solid var(--color-border);
+                    padding: 4px 12px;
+                    border-radius: var(--radius-sm);
+                    font-size: var(--font-size-sm);
+                    cursor: pointer;
+                    color: var(--color-text-main);
+                }
+                
                 /* Toggle Switch */
                 .switch {
-    position: relative;
-    display: inline - block;
-    width: 50px;
-    height: 24px;
-}
-    .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+                    position: relative;
+                    display: inline-block;
+                    width: 50px;
+                    height: 24px;
+                }
+                .switch input {
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
                 .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background - color: #ccc;
-    transition: .4s;
-}
+                    position: absolute;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: #ccc;
+                    transition: .4s;
+                }
                 .slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 4px;
-    bottom: 4px;
-    background - color: white;
-    transition: .4s;
-}
-input: checked + .slider {
-    background - color: var(--color - primary);
-}
-input: checked + .slider:before {
-    transform: translateX(26px);
-}
+                    position: absolute;
+                    content: "";
+                    height: 16px;
+                    width: 16px;
+                    left: 4px;
+                    bottom: 4px;
+                    background-color: white;
+                    transition: .4s;
+                }
+                input:checked + .slider {
+                    background-color: var(--color-primary);
+                }
+                input:checked + .slider:before {
+                    transform: translateX(26px);
+                }
                 .slider.round {
-    border - radius: 24px;
-}
+                    border-radius: 24px;
+                }
                 .slider.round:before {
-    border - radius: 50 %;
-}
+                    border-radius: 50%;
+                }
 
-                .settings - actions {
-    display: flex;
-    flex - direction: column;
-    gap: var(--spacing - lg);
-}
-                .setting - item {
-    display: flex;
-    flex - direction: column;
-    gap: var(--spacing - xs);
-}
-                .setting - item p {
-    font - size: var(--font - size - sm);
-    color: var(--color - text - sub);
-}
+                .settings-actions {
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--spacing-lg);
+                }
+                .setting-item {
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--spacing-xs);
+                }
+                .setting-item p {
+                    font-size: var(--font-size-sm);
+                    color: var(--color-text-sub);
+                }
 
-                .btn - primary, .btn - secondary, .btn - danger {
-    padding: 12px;
-    border - radius: var(--radius - md);
-    font - weight: 600;
-    cursor: pointer;
-    border: none;
-    width: 100 %;
-    text - align: center;
-}
-                .btn - primary {
-    background - color: var(--color - primary);
-    color: white;
-}
-                .btn - secondary {
-    background - color: var(--color - bg - base);
-    border: 1px solid var(--color - border);
-    color: var(--color - text - main);
-}
-                .btn - danger {
-    background - color: #fee2e2;
-    color: #ef4444;
-}
-                .danger - zone {
-    margin - top: var(--spacing - md);
-    padding - top: var(--spacing - md);
-    border - top: 1px solid var(--color - border);
-}
-`}</style>
+                .btn-primary, .btn-secondary, .btn-danger {
+                    padding: 12px;
+                    border-radius: var(--radius-md);
+                    font-weight: 600;
+                    cursor: pointer;
+                    border: none;
+                    width: 100%;
+                    text-align: center;
+                }
+                .btn-primary {
+                    background-color: var(--color-primary);
+                    color: white;
+                }
+                .btn-secondary {
+                    background-color: var(--color-bg-base);
+                    border: 1px solid var(--color-border);
+                    color: var(--color-text-main);
+                }
+                .btn-danger {
+                    background-color: #fee2e2;
+                    color: #ef4444;
+                }
+                .danger-zone {
+                    margin-top: var(--spacing-md);
+                    padding-top: var(--spacing-md);
+                    border-top: 1px solid var(--color-border);
+                }
+            `}</style>
         </div>
     );
 };
