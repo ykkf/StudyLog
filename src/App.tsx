@@ -21,7 +21,7 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <Home onNavigateHistory={() => setCurrentPage('history')} />;
+        return <Home onNavigateHistory={() => setCurrentPage('history')} onEdit={handleEditRecord} />;
       case 'settings':
         return <Settings />;
       case 'items':
@@ -39,7 +39,7 @@ function App() {
       case 'history':
         return <History onEdit={handleEditRecord} />;
       default:
-        return <Home onNavigateHistory={() => setCurrentPage('history')} />;
+        return <Home onNavigateHistory={() => setCurrentPage('history')} onEdit={handleEditRecord} />;
     }
   };
 

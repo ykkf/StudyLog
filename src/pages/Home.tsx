@@ -1,6 +1,7 @@
 import { useData } from '../context/DataContext';
+import type { StudyRecord } from '../types';
 
-export const Home = ({ onNavigateHistory }: { onNavigateHistory: () => void }) => {
+export const Home = ({ onNavigateHistory, onEdit }: { onNavigateHistory: () => void, onEdit: (record: StudyRecord) => void }) => {
   const { data } = useData();
 
   // Total Time Calculation
@@ -112,7 +113,11 @@ export const Home = ({ onNavigateHistory }: { onNavigateHistory: () => void }) =
                 const theme = getTheme(record.themeId);
                 const item = getItem(record.itemId);
                 return (
-                  <div key={record.id} className="record-card">
+                  <div
+                    key={record.id}
+                    className="record-card clickable"
+                    onClick={() => onEdit(record)}
+                  >
                     <div className="record-left" style={{ borderLeft: `4px solid ${theme?.color || '#ccc'}` }}>
                       <div className="record-date">{record.date.replace(/-/g, '/')}</div>
                       <div className="record-theme">{theme?.title}</div>
@@ -271,6 +276,15 @@ export const Home = ({ onNavigateHistory }: { onNavigateHistory: () => void }) =
           display: flex;
           justify-content: space-between;
           align-items: center;
+          transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .record-card.clickable {
+            cursor: pointer;
+        }
+        .record-card.clickable:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background-color: var(--color-bg-base); /* Slight highlight */
         }
         .record-left {
           padding-left: var(--spacing-sm);
