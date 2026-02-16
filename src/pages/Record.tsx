@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
-import { IconCalendar } from '../components/UI/Icons';
 import type { StudyRecord } from '../types';
 
 interface RecordProps {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { IconCalendar } from '../components/UI/Icons';
 import type { StudyPlan } from '../types';
@@ -38,20 +38,32 @@ export const Plan = () => {
 
   // Event Helpers
   const getPlansForDate = (dateStr: string) => data.plans.filter(p => p.date === dateStr);
-  const hasPlans = (dateStr: string) => getPlansForDate(dateStr).length > 0;
-  const hasRecords = (dateStr: string) => data.records.some(r => r.date === dateStr);
 
   // Handlers
   const handleAddPlan = (e: React.FormEvent) => {
     e.preventDefault();
-    // ... (existing code)
+    if (!content || !themeId) return;
+
+    const newPlan: StudyPlan = {
+      id: crypto.randomUUID(),
+      date: selectedDate,
+      themeId,
+      content,
+      isCompleted: false,
+      createdAt: new Date().toISOString()
+    };
+    addPlan(newPlan);
+    setContent('');
   };
 
-  // ... (existing togglePlan/getTheme)
+  const togglePlan = (plan: StudyPlan) => {
+    updatePlan({ ...plan, isCompleted: !plan.isCompleted });
+  };
+
+  const getTheme = (id: string) => data.themes.find(t => t.id === id);
 
   return (
     <div className="page-container">
-      {/* ... (existing header) */}
       <div className="calendar-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <IconCalendar />
@@ -298,7 +310,7 @@ export const Plan = () => {
         }
         .plan-text {
           font-size: var(--font-size-sm);
-          white-space: nowrap;
+           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
