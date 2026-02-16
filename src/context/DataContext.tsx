@@ -46,6 +46,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [data, isLoading]);
 
+    // Apply theme to document
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', data.themeMode || 'light');
+    }, [data.themeMode]);
+
     const updateUser = (userUpdates: Partial<User>) => {
         setData(prev => ({ ...prev, user: { ...prev.user, ...userUpdates } }));
     };
