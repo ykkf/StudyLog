@@ -1,58 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
+import { IconCalendar } from '../components/UI/Icons';
 import type { StudyRecord } from '../types';
 
-export const Record = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
-    const { data, addRecord } = useData();
+interface RecordProps {
+    onNavigateHome: () => void;
+    initialData?: StudyRecord | null;
+}
+
+export const Record: React.FC<RecordProps> = ({ onNavigateHome, initialData }) => {
+    const { data, addRecord, updateRecord } = useData();
 
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-    const [hours, setHours] = useState(1);
-    const [minutes, setMinutes] = useState(0);
-    const [selectedThemeId, setSelectedThemeId] = useState('');
-    const [selectedItemId, setSelectedItemId] = useState('');
+    const [hours, setHours] = useState('0');
+    const [minutes, setMinutes] = useState('0');
+    const [themeId, setThemeId] = useState('');
+    const [itemId, setItemId] = useState('');
     const [memo, setMemo] = useState('');
     const [reflection, setReflection] = useState('');
 
-    // Reset item selection when theme changes
+    // Pre-fill form if editing
     useEffect(() => {
-        setSelectedItemId('');
-    }, [selectedThemeId]);
+        if (initialData) {
+            setDate(initialData.date);
+            setHours(Math.floor(initialData.durationMinutes / 60).toString());
+            setMinutes((initialData.durationMinutes % 60).toString());
+            setThemeId(initialData.themeId);
+            setItemId(initialData.itemId || '');
+            setMemo(initialData.memo || '');
+            setReflection(initialData.reflection || '');
+        }
+    }, [initialData]);
+
+    // Filter items based on selected theme
+    const filteredItems = data.items.filter(item => item.themeId === themeId && !item.isCompleted);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedThemeId) {
+
+        if (!themeId) {
             alert('テーマを選択してください');
             return;
         }
 
-        const durationMinutes = (Number(hours) * 60) + Number(minutes);
-        if (durationMinutes <= 0) {
+        const duration = parseInt(hours) * 60 + parseInt(minutes);
+        if (duration <= 0) {
             alert('学習時間を入力してください');
             return;
         }
 
-        const newRecord: StudyRecord = {
-            id: crypto.randomUUID(),
+        const recordData: StudyRecord = {
+            id: initialData ? initialData.id : crypto.randomUUID(),
             date,
-            durationMinutes,
-            themeId: selectedThemeId,
-            itemId: selectedItemId || undefined,
+            durationMinutes: duration,
+            themeId,
+            itemId: itemId || undefined,
             memo,
             reflection,
-            createdAt: new Date().toISOString(),
+            createdAt: initialData ? initialData.createdAt : new Date().toISOString(),
         };
 
-        addRecord(newRecord);
-        alert('学習を記録しました！');
+        if (initialData) {
+            updateRecord(recordData);
+            alert('記録を更新しました！');
+        } else {
+            addRecord(recordData);
+            alert('学習を記録しました！');
+        }
         onNavigateHome();
     };
 
-    const themeItems = data.items.filter(i => i.themeId === selectedThemeId);
-
     return (
         <div className="page-container">
-            <h2>学習記録</h2>
-
+            <h2>{initialData ? '記録の編集' : '学習記録'}</h2>
             <form onSubmit={handleSubmit} className="record-form">
                 <div className="form-group">
                     <label>日付</label>
@@ -61,29 +81,29 @@ export const Record = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
                         value={date}
                         onChange={e => setDate(e.target.value)}
                         required
+                        className="input-date"
                     />
                 </div>
 
                 <div className="form-group">
-                    <label>学習時間</label>
+                    <label>時間</label>
                     <div className="time-inputs">
-                        <div className="time-field">
+                        <div className="time-input-group">
                             <input
                                 type="number"
                                 min="0"
-                                max="23"
                                 value={hours}
-                                onChange={e => setHours(Number(e.target.value))}
+                                onChange={e => setHours(e.target.value)}
                             />
                             <span>時間</span>
                         </div>
-                        <div className="time-field">
+                        <div className="time-input-group">
                             <input
                                 type="number"
                                 min="0"
                                 max="59"
                                 value={minutes}
-                                onChange={e => setMinutes(Number(e.target.value))}
+                                onChange={e => setMinutes(e.target.value)}
                             />
                             <span>分</span>
                         </div>
@@ -91,43 +111,42 @@ export const Record = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
                 </div>
 
                 <div className="form-group">
-                    <label>テーマ</label>
+                    <label>テーマ <span className="required">*</span></label>
                     <select
-                        value={selectedThemeId}
-                        onChange={e => setSelectedThemeId(e.target.value)}
+                        value={themeId}
+                        onChange={e => {
+                            setThemeId(e.target.value);
+                            setItemId(''); // Reset item when theme changes
+                        }}
                         required
-                        className={!selectedThemeId ? 'placeholder' : ''}
                     >
-                        <option value="" disabled>テーマを選択...</option>
+                        <option value="" disabled>選択してください</option>
                         {data.themes.map(theme => (
                             <option key={theme.id} value={theme.id}>{theme.title}</option>
                         ))}
                     </select>
-                    {data.themes.length === 0 && (
-                        <p className="helper-text">※まずは学習項目画面でテーマを作成してください</p>
-                    )}
                 </div>
 
                 <div className="form-group">
                     <label>学習項目 (任意)</label>
                     <select
-                        value={selectedItemId}
-                        onChange={e => setSelectedItemId(e.target.value)}
-                        disabled={!selectedThemeId}
+                        value={itemId}
+                        onChange={e => setItemId(e.target.value)}
+                        disabled={!themeId}
                     >
-                        <option value="">-- 指定なし --</option>
-                        {themeItems.map(item => (
+                        <option value="">選択なし</option>
+                        {filteredItems.map(item => (
                             <option key={item.id} value={item.id}>{item.title}</option>
                         ))}
                     </select>
                 </div>
 
                 <div className="form-group">
-                    <label>内容メモ</label>
+                    <label>メモ</label>
                     <textarea
                         value={memo}
                         onChange={e => setMemo(e.target.value)}
-                        placeholder="学習した内容の要約など"
+                        placeholder="学習内容の詳細など"
                         rows={3}
                     />
                 </div>
@@ -137,26 +156,22 @@ export const Record = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
                     <textarea
                         value={reflection}
                         onChange={e => setReflection(e.target.value)}
-                        placeholder="良かった点、反省点、次回の目標など"
+                        placeholder="分かったこと、次はどうする？"
                         rows={2}
                     />
                 </div>
 
-                <button type="submit" className="btn-submit">記録する</button>
+                <button type="submit" className="btn-submit">
+                    {initialData ? '更新する' : '記録する'}
+                </button>
             </form>
 
             <style>{`
         .page-container {
           padding: var(--spacing-md);
-          max-width: 600px;
-          margin: 0 auto;
-          padding-bottom: 80px;
+          padding-bottom: 80px; /* Nav bar height */
         }
         .record-form {
-          background: var(--color-bg-card);
-          padding: var(--spacing-lg);
-          border-radius: var(--radius-lg);
-          box-shadow: var(--shadow-sm);
           display: flex;
           flex-direction: column;
           gap: var(--spacing-lg);
@@ -165,57 +180,55 @@ export const Record = ({ onNavigateHome }: { onNavigateHome: () => void }) => {
         .form-group {
           display: flex;
           flex-direction: column;
-          gap: var(--spacing-sm);
+          gap: var(--spacing-xs);
         }
         .form-group label {
           font-weight: 600;
           font-size: var(--font-size-sm);
-          color: var(--color-text-sub);
+          color: var(--color-text);
         }
+        .required {
+          color: var(--color-warning);
+        }
+        
         input, select, textarea {
-          padding: 10px;
+          padding: 12px;
           border: 1px solid var(--color-border);
           border-radius: var(--radius-md);
-          font-size: var(--font-size-base);
+          font-size: var(--font-size-md);
           background-color: var(--color-bg-base);
-          font-family: inherit;
+          color: var(--color-text);
         }
-        input:focus, select:focus, textarea:focus {
-          outline: 2px solid var(--color-primary-light);
-          border-color: var(--color-primary);
-        }
+        
         .time-inputs {
           display: flex;
           gap: var(--spacing-md);
         }
-        .time-field {
+        .time-input-group {
           display: flex;
           align-items: center;
           gap: var(--spacing-xs);
+          flex: 1;
         }
-        .time-field input {
-          width: 80px;
+        .time-input-group input {
+          width: 100%;
           text-align: center;
+          font-size: var(--font-size-lg);
         }
+
         .btn-submit {
+          margin-top: var(--spacing-md);
+          padding: 16px;
           background-color: var(--color-primary);
           color: white;
           border: none;
-          padding: 14px;
-          border-radius: var(--radius-md);
-          font-weight: 700;
-          font-size: var(--font-size-lg);
-          margin-top: var(--spacing-sm);
-          box-shadow: var(--shadow-md);
-          transition: transform 0.1s;
+          border-radius: var(--radius-lg);
+          font-size: var(--font-size-md);
+          font-weight: bold;
+          cursor: pointer;
+          box-shadow: var(--shadow-sm);
         }
         .btn-submit:active {
-          transform: scale(0.98);
-        }
-        .placeholder {
-          color: var(--color-text-sub);
-        }
-        .helper-text {
           font-size: 0.8rem;
           color: var(--color-danger);
           margin-top: 4px;

@@ -1,21 +1,31 @@
 :root {
   /* Colors */
-  --color-primary: #4F46E5; /* Indigo 600 */
-  --color-primary-light: #818CF8; /* Indigo 400 */
-  --color-primary-dark: #3730A3; /* Indigo 800 */
-  
-  --color-bg-base: #F9FAFB; /* Gray 50 */
+  --color-primary: #4F46E5;
+  /* Indigo 600 */
+  --color-primary-light: #818CF8;
+  /* Indigo 400 */
+  --color-primary-dark: #3730A3;
+  /* Indigo 800 */
+
+  --color-bg-base: #F9FAFB;
+  /* Gray 50 */
   --color-bg-card: #FFFFFF;
   --color-bg-overlay: rgba(0, 0, 0, 0.5);
 
-  --color-text-main: #111827; /* Gray 900 */
-  --color-text-sub: #6B7280; /* Gray 500 */
+  --color-text-main: #111827;
+  /* Gray 900 */
+  --color-text-sub: #6B7280;
+  /* Gray 500 */
   --color-text-inverse: #FFFFFF;
 
-  --color-border: #E5E7EB; /* Gray 200 */
-  --color-success: #10B981; /* Emerald 500 */
-  --color-warning: #F59E0B; /* Amber 500 */
-  --color-danger: #EF4444; /* Red 500 */
+  --color-border: #E5E7EB;
+  /* Gray 200 */
+  --color-success: #10B981;
+  /* Emerald 500 */
+  --color-warning: #F59E0B;
+  /* Amber 500 */
+  --color-danger: #EF4444;
+  /* Red 500 */
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -44,6 +54,23 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] {
+  --color-bg-base: #111827;
+  /* Gray 900 */
+  --color-bg-card: #1F2937;
+  /* Gray 800 */
+
+  --color-text-main: #F9FAFB;
+  /* Gray 50 */
+  --color-text-sub: #9CA3AF;
+  /* Gray 400 */
+  --color-text-inverse: #111827;
+
+  --color-border: #374151;
+  /* Gray 700 */
+  --color-bg-overlay: rgba(0, 0, 0, 0.75);
 }
 
 body {

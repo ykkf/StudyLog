@@ -14,9 +14,12 @@ interface DataContextType {
     updateItem: (item: LearningItem) => void;
     deleteItem: (itemId: string) => void;
     addRecord: (record: StudyRecord) => void;
+    updateRecord: (record: StudyRecord) => void;
+    deleteRecord: (recordId: string) => void;
     addPlan: (plan: StudyPlan) => void;
     updatePlan: (plan: StudyPlan) => void;
     deletePlan: (planId: string) => void;
+    toggleTheme: () => void;
     importData: (jsonData: string) => boolean;
     resetData: () => void;
 }
@@ -109,6 +112,27 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }));
     };
 
+    const updateRecord = (updatedRecord: StudyRecord) => {
+        setData(prev => ({
+            ...prev,
+            records: prev.records.map(r => r.id === updatedRecord.id ? updatedRecord : r)
+        }));
+    };
+
+    const deleteRecord = (recordId: string) => {
+        setData(prev => ({
+            ...prev,
+            records: prev.records.filter(r => r.id !== recordId)
+        }));
+    };
+
+    const toggleTheme = () => {
+        setData(prev => ({
+            ...prev,
+            themeMode: prev.themeMode === 'dark' ? 'light' : 'dark'
+        }));
+    };
+
     const importData = (jsonData: string): boolean => {
         try {
             const parsed = JSON.parse(jsonData) as AppData;
@@ -140,9 +164,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             updateItem,
             deleteItem,
             addRecord,
+            updateRecord,
+            deleteRecord,
             addPlan,
             updatePlan,
             deletePlan,
+            toggleTheme,
             importData,
             resetData
         }}>

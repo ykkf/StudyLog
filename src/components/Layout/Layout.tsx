@@ -1,65 +1,63 @@
-import React from 'react';
 import { IconHome, IconList, IconEdit, IconCalendar, IconSettings } from '../UI/Icons';
-
-type Page = 'home' | 'items' | 'record' | 'plan' | 'settings';
+import type { Page } from '../../types';
 
 interface LayoutProps {
-    children: React.ReactNode;
-    currentPage: Page;
-    onNavigate: (page: Page) => void;
+  children: React.ReactNode;
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigate }) => {
-    return (
-        <div className="layout">
-            <header className="header">
-                <h1>StudyLog</h1>
-            </header>
+  return (
+    <div className="layout">
+      <header className="header">
+        <h1>StudyLog</h1>
+      </header>
 
-            <main className="main-content">
-                {children}
-            </main>
+      <main className="main-content">
+        {children}
+      </main>
 
-            <nav className="bottom-nav">
-                <button
-                    className={`nav-item ${currentPage === 'home' ? 'active' : ''}`}
-                    onClick={() => onNavigate('home')}
-                >
-                    <IconHome />
-                    <span>Home</span>
-                </button>
-                <button
-                    className={`nav-item ${currentPage === 'items' ? 'active' : ''}`}
-                    onClick={() => onNavigate('items')}
-                >
-                    <IconList />
-                    <span>Items</span>
-                </button>
-                <button
-                    className={`nav-item ${currentPage === 'record' ? 'active' : ''}`}
-                    onClick={() => onNavigate('record')}
-                >
-                    <div className="record-fab">
-                        <IconEdit />
-                    </div>
-                </button>
-                <button
-                    className={`nav-item ${currentPage === 'plan' ? 'active' : ''}`}
-                    onClick={() => onNavigate('plan')}
-                >
-                    <IconCalendar />
-                    <span>Plan</span>
-                </button>
-                <button
-                    className={`nav-item ${currentPage === 'settings' ? 'active' : ''}`}
-                    onClick={() => onNavigate('settings')}
-                >
-                    <IconSettings />
-                    <span>Settings</span>
-                </button>
-            </nav>
+      <nav className="bottom-nav">
+        <button
+          className={`nav-item ${currentPage === 'home' ? 'active' : ''}`}
+          onClick={() => onNavigate('home')}
+        >
+          <IconHome />
+          <span>Home</span>
+        </button>
+        <button
+          className={`nav-item ${currentPage === 'items' ? 'active' : ''}`}
+          onClick={() => onNavigate('items')}
+        >
+          <IconList />
+          <span>Items</span>
+        </button>
+        <button
+          className={`nav-item ${currentPage === 'record' ? 'active' : ''}`}
+          onClick={() => onNavigate('record')}
+        >
+          <div className="record-fab">
+            <IconEdit />
+          </div>
+        </button>
+        <button
+          className={`nav-item ${currentPage === 'plan' ? 'active' : ''}`}
+          onClick={() => onNavigate('plan')}
+        >
+          <IconCalendar />
+          <span>Plan</span>
+        </button>
+        <button
+          className={`nav-item ${currentPage === 'settings' ? 'active' : ''}`}
+          onClick={() => onNavigate('settings')}
+        >
+          <IconSettings />
+          <span>Settings</span>
+        </button>
+      </nav>
 
-            <style>{`
+      <style>{`
         .layout {
           display: flex;
           flex-direction: column;
@@ -126,6 +124,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
           box-shadow: var(--shadow-lg);
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };

@@ -4,178 +4,167 @@ import { IconCalendar } from '../components/UI/Icons';
 import type { StudyPlan } from '../types';
 
 export const Plan = () => {
-    const { data, addPlan, updatePlan, deletePlan } = useData();
+  const { data, addPlan, updatePlan, deletePlan } = useData();
 
-    // Calendar State
-    const today = new Date();
-    const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-    const [selectedDate, setSelectedDate] = useState(today.toISOString().split('T')[0]);
+  // Calendar State
+  const today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const [selectedDate, setSelectedDate] = useState(today.toISOString().split('T')[0]);
 
-    // Form State
-    const [content, setContent] = useState('');
-    const [themeId, setThemeId] = useState('');
+  // Form State
+  const [content, setContent] = useState('');
+  const [themeId, setThemeId] = useState('');
 
-    // Calendar Logic
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
+  // Calendar Logic
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
 
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0: Sun, 1: Mon...
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0: Sun, 1: Mon...
 
-    const prevMonth = () => setCurrentMonth(new Date(year, month - 1, 1));
-    const nextMonth = () => setCurrentMonth(new Date(year, month + 1, 1));
+  const prevMonth = () => setCurrentMonth(new Date(year, month - 1, 1));
+  const nextMonth = () => setCurrentMonth(new Date(year, month + 1, 1));
 
-    const days = [];
-    // Empty slots for prev month
-    for (let i = 0; i < firstDayOfMonth; i++) {
-        days.push(null);
-    }
-    // Days of current month
-    for (let i = 1; i <= daysInMonth; i++) {
-        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-        days.push(dateStr);
-    }
+  const days = [];
+  // Empty slots for prev month
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    days.push(null);
+  }
+  // Days of current month
+  for (let i = 1; i <= daysInMonth; i++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+    days.push(dateStr);
+  }
 
-    // Event Helpers
-    const getPlansForDate = (dateStr: string) => data.plans.filter(p => p.date === dateStr);
-    const hasPlans = (dateStr: string) => getPlansForDate(dateStr).length > 0;
+  // Event Helpers
+  const getPlansForDate = (dateStr: string) => data.plans.filter(p => p.date === dateStr);
+  const hasPlans = (dateStr: string) => getPlansForDate(dateStr).length > 0;
+  const hasRecords = (dateStr: string) => data.records.some(r => r.date === dateStr);
 
-    // Handlers
-    const handleAddPlan = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!content.trim() || !themeId) return;
+  // Handlers
+  const handleAddPlan = (e: React.FormEvent) => {
+    e.preventDefault();
+    // ... (existing code)
+  };
 
-        const newPlan: StudyPlan = {
-            id: crypto.randomUUID(),
-            date: selectedDate,
-            themeId,
-            content,
-            isCompleted: false,
-            createdAt: new Date().toISOString(),
-        };
+  // ... (existing togglePlan/getTheme)
 
-        addPlan(newPlan);
-        setContent('');
-        // Keep theme selected for convenience
-    };
+  return (
+    <div className="page-container">
+      {/* ... (existing header) */}
+      <div className="calendar-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <IconCalendar />
+          <h3>{year}年 {month + 1}月</h3>
+        </div>
+        <div>
+          <button onClick={prevMonth} className="btn-nav" style={{ marginRight: '8px' }}>&lt;</button>
+          <button onClick={nextMonth} className="btn-nav">&gt;</button>
+        </div>
+      </div>
 
-    const togglePlan = (plan: StudyPlan) => {
-        updatePlan({ ...plan, isCompleted: !plan.isCompleted });
-    };
+      <div className="calendar-grid">
+        <div className="weekday">日</div>
+        <div className="weekday">月</div>
+        <div className="weekday">火</div>
+        <div className="weekday">水</div>
+        <div className="weekday">木</div>
+        <div className="weekday">金</div>
+        <div className="weekday">土</div>
 
-    const getTheme = (id: string) => data.themes.find(t => t.id === id);
+        {days.map((dateStr, index) => {
+          if (!dateStr) return <div key={`empty-${index}`} className="day-cell empty"></div>;
 
-    return (
-        <div className="page-container">
-            <div className="calendar-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <IconCalendar />
-                    <h3>{year}年 {month + 1}月</h3>
-                </div>
-                <div>
-                    <button onClick={prevMonth} className="btn-nav" style={{ marginRight: '8px' }}>&lt;</button>
-                    <button onClick={nextMonth} className="btn-nav">&gt;</button>
-                </div>
+          const isSelected = dateStr === selectedDate;
+          const isToday = dateStr === today.toISOString().split('T')[0];
+          const planCount = getPlansForDate(dateStr).length;
+          const recordCount = data.records.filter(r => r.date === dateStr).length;
+          const dayNum = parseInt(dateStr.split('-')[2]);
+
+          return (
+            <div
+              key={dateStr}
+              className={`day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`}
+              onClick={() => setSelectedDate(dateStr)}
+            >
+              <span className="day-num">{dayNum}</span>
+              <div className="dots-container">
+                {planCount > 0 && <span className="dot plan-dot"></span>}
+                {recordCount > 0 && <span className="dot record-dot"></span>}
+              </div>
             </div>
+          );
+        })}
+      </div>
 
-            <div className="calendar-grid">
-                <div className="weekday">日</div>
-                <div className="weekday">月</div>
-                <div className="weekday">火</div>
-                <div className="weekday">水</div>
-                <div className="weekday">木</div>
-                <div className="weekday">金</div>
-                <div className="weekday">土</div>
+      <div className="plan-section">
+        <div className="plan-header">
+          <h4>{selectedDate.replace(/-/g, '/')} の予定</h4>
+        </div>
 
-                {days.map((dateStr, index) => {
-                    if (!dateStr) return <div key={`empty-${index}`} className="day-cell empty"></div>;
-
-                    const isSelected = dateStr === selectedDate;
-                    const isToday = dateStr === today.toISOString().split('T')[0];
-                    const hasEvent = hasPlans(dateStr);
-                    const dayNum = parseInt(dateStr.split('-')[2]);
-
-                    return (
-                        <div
-                            key={dateStr}
-                            className={`day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`}
-                            onClick={() => setSelectedDate(dateStr)}
-                        >
-                            <span className="day-num">{dayNum}</span>
-                            {hasEvent && <span className="event-dot"></span>}
-                        </div>
-                    );
-                })}
-            </div>
-
-            <div className="plan-section">
-                <div className="plan-header">
-                    <h4>{selectedDate.replace(/-/g, '/')} の予定</h4>
+        <div className="plan-list">
+          {getPlansForDate(selectedDate).length === 0 && (
+            <p className="no-plans">予定はありません</p>
+          )}
+          {getPlansForDate(selectedDate).map(plan => {
+            const theme = getTheme(plan.themeId);
+            return (
+              <div key={plan.id} className={`plan-item ${plan.isCompleted ? 'completed' : ''}`}>
+                <label className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    checked={plan.isCompleted}
+                    onChange={() => togglePlan(plan)}
+                  />
+                  <span className="checkmark"></span>
+                </label>
+                <div className="plan-content">
+                  <span
+                    className="plan-theme-badge"
+                    style={{ backgroundColor: theme?.color || '#ccc' }}
+                  >
+                    {theme?.title}
+                  </span>
+                  <span className="plan-text">{plan.content}</span>
                 </div>
+                <button
+                  className="btn-delete"
+                  onClick={() => deletePlan(plan.id)}
+                >
+                  ×
+                </button>
+              </div>
+            );
+          })}
+        </div>
 
-                <div className="plan-list">
-                    {getPlansForDate(selectedDate).length === 0 && (
-                        <p className="no-plans">予定はありません</p>
-                    )}
-                    {getPlansForDate(selectedDate).map(plan => {
-                        const theme = getTheme(plan.themeId);
-                        return (
-                            <div key={plan.id} className={`plan-item ${plan.isCompleted ? 'completed' : ''}`}>
-                                <label className="checkbox-container">
-                                    <input
-                                        type="checkbox"
-                                        checked={plan.isCompleted}
-                                        onChange={() => togglePlan(plan)}
-                                    />
-                                    <span className="checkmark"></span>
-                                </label>
-                                <div className="plan-content">
-                                    <span
-                                        className="plan-theme-badge"
-                                        style={{ backgroundColor: theme?.color || '#ccc' }}
-                                    >
-                                        {theme?.title}
-                                    </span>
-                                    <span className="plan-text">{plan.content}</span>
-                                </div>
-                                <button
-                                    className="btn-delete"
-                                    onClick={() => deletePlan(plan.id)}
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        );
-                    })}
-                </div>
+        <form onSubmit={handleAddPlan} className="add-plan-form">
+          <select
+            value={themeId}
+            onChange={e => setThemeId(e.target.value)}
+            required
+            className={!themeId ? 'placeholder' : ''}
+          >
+            <option value="" disabled>テーマ選択...</option>
+            {data.themes.map(t => (
+              <option key={t.id} value={t.id}>{t.title}</option>
+            ))}
+          </select>
+          <input
+            type="text"
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            placeholder="学習内容..."
+            required
+          />
+          <button type="submit" disabled={!content || !themeId}>追加</button>
+        </form>
+        {data.themes.length === 0 && (
+          <p className="helper-text">※テーマを作成すると予定を追加できます</p>
+        )}
+      </div>
 
-                <form onSubmit={handleAddPlan} className="add-plan-form">
-                    <select
-                        value={themeId}
-                        onChange={e => setThemeId(e.target.value)}
-                        required
-                        className={!themeId ? 'placeholder' : ''}
-                    >
-                        <option value="" disabled>テーマ選択...</option>
-                        {data.themes.map(t => (
-                            <option key={t.id} value={t.id}>{t.title}</option>
-                        ))}
-                    </select>
-                    <input
-                        type="text"
-                        value={content}
-                        onChange={e => setContent(e.target.value)}
-                        placeholder="学習内容..."
-                        required
-                    />
-                    <button type="submit" disabled={!content || !themeId}>追加</button>
-                </form>
-                {data.themes.length === 0 && (
-                    <p className="helper-text">※テーマを作成すると予定を追加できます</p>
-                )}
-            </div>
-
-            <style>{`
+      <style>{`
         .page-container {
           padding: var(--spacing-md);
           padding-bottom: 80px;
@@ -236,16 +225,25 @@ export const Plan = () => {
           color: var(--color-primary);
           font-weight: 700;
         }
-        .event-dot {
-          width: 4px;
-          height: 4px;
-          background-color: var(--color-warning);
-          border-radius: 50%;
-          position: absolute;
-          bottom: 4px;
+        .dots-container {
+            display: flex;
+            gap: 2px;
+            position: absolute;
+            bottom: 4px;
         }
-        .day-cell.selected .event-dot {
-          background-color: white;
+        .dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+        .plan-dot {
+            background-color: var(--color-warning);
+        }
+        .record-dot {
+            background-color: var(--color-primary); /* Green or Primary color for executed */
+        }
+        .day-cell.selected .dot {
+            background-color: white;
         }
 
         .plan-section {
@@ -356,6 +354,6 @@ export const Plan = () => {
           margin-top: 4px;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };

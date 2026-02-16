@@ -1,11 +1,10 @@
-
 import { useData } from '../context/DataContext';
 
-export const Home = () => {
+export const Home = ({ onNavigateHistory }: { onNavigateHistory: () => void }) => {
   const { data } = useData();
 
   // Total Time Calculation
-  const totalTime = data.records.reduce((acc, text) => acc + text.durationMinutes, 0);
+  const totalTime = data.records.reduce((acc, record) => acc + record.durationMinutes, 0);
   const hours = Math.floor(totalTime / 60);
   const minutes = totalTime % 60;
 
@@ -32,11 +31,6 @@ export const Home = () => {
       value: minutes,
     };
   }).sort((a, b) => b.value - a.value);
-
-  // Simple Donut using stroke-dasharray
-  // Circumference = 2 * PI * r. Let r=16 (approx to viewBox 32 size). C ~ 100.
-  // Then stroke-dasharray = "percent 100". stroke-dashoffset = "cumulative-percent".
-  // Note: standard circle starts at 3 o'clock. rotate -90deg to start at 12.
 
   let offsetAccumulator = 0;
   const donutSegments = chartData.map(d => {
@@ -105,29 +99,34 @@ export const Home = () => {
       </div>
 
       <div className="recent-section">
-        <h3>Recent</h3>
-        {recentRecords.length === 0 ? (
-          <p className="no-records">まだ記録がありません</p>
-        ) : (
-          <div className="record-list">
-            {recentRecords.map(record => {
-              const theme = getTheme(record.themeId);
-              const item = getItem(record.itemId);
-              return (
-                <div key={record.id} className="record-card">
-                  <div className="record-left" style={{ borderLeft: `4px solid ${theme?.color || '#ccc'}` }}>
-                    <div className="record-date">{record.date.replace(/-/g, '/')}</div>
-                    <div className="record-theme">{theme?.title}</div>
-                    {item && <div className="record-item">{item.title}</div>}
+        <div className="section-header">
+          <h3>最近の活動</h3>
+          <button onClick={onNavigateHistory} className="btn-link">すべて見る</button>
+        </div>
+        <div className="recent-list">
+          {recentRecords.length === 0 ? (
+            <p className="no-records">まだ記録がありません</p>
+          ) : (
+            <div className="record-list">
+              {recentRecords.map(record => {
+                const theme = getTheme(record.themeId);
+                const item = getItem(record.itemId);
+                return (
+                  <div key={record.id} className="record-card">
+                    <div className="record-left" style={{ borderLeft: `4px solid ${theme?.color || '#ccc'}` }}>
+                      <div className="record-date">{record.date.replace(/-/g, '/')}</div>
+                      <div className="record-theme">{theme?.title}</div>
+                      {item && <div className="record-item">{item.title}</div>}
+                    </div>
+                    <div className="record-right">
+                      <span className="record-duration">{Math.floor(record.durationMinutes / 60)}h {record.durationMinutes % 60}m</span>
+                    </div>
                   </div>
-                  <div className="record-right">
-                    <span className="record-duration">{Math.floor(record.durationMinutes / 60)}h {record.durationMinutes % 60}m</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <style>{`
@@ -136,6 +135,7 @@ export const Home = () => {
           display: flex;
           flex-direction: column;
           gap: var(--spacing-lg);
+          padding-bottom: 80px;
         }
         .welcome-card {
           margin-bottom: var(--spacing-sm);
@@ -238,6 +238,24 @@ export const Home = () => {
         .legend-value {
           margin-left: 6px;
           color: var(--color-text-sub);
+        }
+
+        .recent-section {
+            /* padding-bottom: 20px; */
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--color-primary);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            text-decoration: underline;
         }
 
         .record-list {

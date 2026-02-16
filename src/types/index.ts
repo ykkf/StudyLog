@@ -46,4 +46,7 @@ export interface AppData {
   items: LearningItem[];
   records: StudyRecord[];
   plans: StudyPlan[];
+  themeMode?: 'light' | 'dark';
 }
+
+export type Page = 'home' | 'items' | 'record' | 'plan' | 'settings' | 'history';
