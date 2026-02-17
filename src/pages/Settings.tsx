@@ -3,7 +3,7 @@ import { useData } from '../context/DataContext';
 import { storage } from '../utils/storage';
 
 export const Settings = () => {
-    const { data, updateUser, toggleTheme, resetData, importData, setBackgroundTheme } = useData();
+    const { data, updateUser, toggleTheme, resetData, importData, setBackgroundColor } = useData();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [userName, setUserName] = useState(data.user.name);
@@ -111,18 +111,31 @@ export const Settings = () => {
                     </label>
                 </div>
                 <div className="theme-setting" style={{ marginTop: 'var(--spacing-md)', borderTop: '1px solid var(--color-border)', paddingTop: 'var(--spacing-md)' }}>
-                    <span>背景テーマ</span>
-                    <select
-                        value={data.backgroundThemeId || ''}
-                        onChange={(e) => setBackgroundTheme(e.target.value || undefined)}
-                        className="theme-select"
-                        style={{ padding: '4px', borderRadius: '4px', border: '1px solid var(--color-border)', background: 'var(--color-bg-base)', color: 'var(--color-text-main)' }}
-                    >
-                        <option value="">設定なし</option>
-                        {data.themes.map(t => (
-                            <option key={t.id} value={t.id}>{t.title}</option>
-                        ))}
-                    </select>
+                    <span>背景色</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {data.backgroundColor && (
+                            <button
+                                onClick={() => setBackgroundColor(undefined)}
+                                style={{ fontSize: '0.8rem', padding: '2px 8px', background: 'none', border: '1px solid var(--color-border)', borderRadius: '4px' }}
+                            >
+                                リセット
+                            </button>
+                        )}
+                        <input
+                            type="color"
+                            value={data.backgroundColor || '#ffffff'}
+                            onChange={(e) => setBackgroundColor(e.target.value)}
+                            style={{
+                                width: '40px',
+                                height: '24px',
+                                padding: 0,
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                background: 'none'
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
 

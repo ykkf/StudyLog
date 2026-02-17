@@ -47,7 +47,7 @@ export interface AppData {
   records: StudyRecord[];
   plans: StudyPlan[];
   themeMode?: 'light' | 'dark';
-  backgroundThemeId?: string;
+  backgroundColor?: string;
 }
 
 export type Page = 'home' | 'items' | 'record' | 'plan' | 'settings' | 'history';

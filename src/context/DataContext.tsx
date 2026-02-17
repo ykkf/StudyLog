@@ -20,7 +20,7 @@ interface DataContextType {
     updatePlan: (plan: StudyPlan) => void;
     deletePlan: (planId: string) => void;
     toggleTheme: () => void;
-    setBackgroundTheme: (id: string | undefined) => void;
+    setBackgroundColor: (color: string | undefined) => void;
     importData: (jsonData: string) => boolean;
     resetData: () => void;
 }
@@ -54,15 +54,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Apply background theme color
     useEffect(() => {
-        const bgTheme = data.themes.find(t => t.id === data.backgroundThemeId);
-        if (bgTheme) {
-            document.documentElement.style.setProperty('--global-theme-color', bgTheme.color);
+        if (data.backgroundColor) {
+            document.documentElement.style.setProperty('--global-theme-color', data.backgroundColor);
             document.documentElement.setAttribute('data-has-bg-theme', 'true');
         } else {
             document.documentElement.style.removeProperty('--global-theme-color');
             document.documentElement.removeAttribute('data-has-bg-theme');
         }
-    }, [data.backgroundThemeId, data.themes]);
+    }, [data.backgroundColor]);
 
     const updateUser = (userUpdates: Partial<User>) => {
         setData(prev => ({ ...prev, user: { ...prev.user, ...userUpdates } }));
@@ -151,8 +150,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }));
     };
 
-    const setBackgroundTheme = (id: string | undefined) => {
-        setData(prev => ({ ...prev, backgroundThemeId: id }));
+    const setBackgroundColor = (color: string | undefined) => {
+        setData(prev => ({ ...prev, backgroundColor: color }));
     };
 
     const importData = (jsonData: string): boolean => {
@@ -192,7 +191,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             updatePlan,
             deletePlan,
             toggleTheme,
-            setBackgroundTheme,
+            setBackgroundColor,
             importData,
             resetData
         }}>
