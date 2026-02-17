@@ -110,6 +110,20 @@ export const Settings = () => {
                         <span className="slider round"></span>
                     </label>
                 </div>
+                <div className="theme-setting" style={{ marginTop: 'var(--spacing-md)', borderTop: '1px solid var(--color-border)', paddingTop: 'var(--spacing-md)' }}>
+                    <span>背景テーマ</span>
+                    <select
+                        value={data.backgroundThemeId || ''}
+                        onChange={(e) => setBackgroundTheme(e.target.value || undefined)}
+                        className="theme-select"
+                        style={{ padding: '4px', borderRadius: '4px', border: '1px solid var(--color-border)', background: 'var(--color-bg-base)', color: 'var(--color-text-main)' }}
+                    >
+                        <option value="">設定なし</option>
+                        {data.themes.map(t => (
+                            <option key={t.id} value={t.id}>{t.title}</option>
+                        ))}
+                    </select>
+                </div>
             </div>
 
             <div className="settings-section">
