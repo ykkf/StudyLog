@@ -126,13 +126,13 @@ export const Settings = () => {
                             value={data.backgroundColor || '#ffffff'}
                             onChange={(e) => setBackgroundColor(e.target.value)}
                             style={{
-                                width: '40px',
-                                height: '24px',
-                                padding: 0,
-                                border: 'none',
+                                width: '60px',
+                                height: '32px',
+                                padding: '2px',
+                                border: '1px solid var(--color-border)',
                                 borderRadius: '4px',
                                 cursor: 'pointer',
-                                background: 'none'
+                                background: 'var(--color-bg-base)'
                             }}
                         />
                     </div>
