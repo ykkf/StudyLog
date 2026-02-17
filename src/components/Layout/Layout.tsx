@@ -63,7 +63,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
           flex-direction: column;
           height: 100vh;
           max-width: 100%;
-          background-color: var(--color-bg-base);
         }
         .header {
           background-color: var(--color-bg-card);

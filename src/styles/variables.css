@@ -73,12 +73,20 @@
   --color-bg-overlay: rgba(0, 0, 0, 0.75);
 }
 
-body {
+
+html {
   background-color: var(--color-bg-base);
+  height: 100%;
+}
+
+body {
+  /* background-color: var(--color-bg-base); Removed to allow html bg and pseudo-element stacking */
   color: var(--color-text-main);
   font-family: var(--font-family);
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  min-height: 100%;
+  position: relative;
 }
 
 button {
