@@ -85,3 +85,29 @@ button {
   cursor: pointer;
   font-family: inherit;
 }
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--global-theme-color, transparent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+[data-has-bg-theme="true"] body::before {
+  opacity: 0.15;
+  /* 15% tint */
+}
+
+[data-theme='dark'][data-has-bg-theme="true"] body::before {
+  opacity: 0.25;
+  /* Slightly stronger in dark mode for visibility, or adjust as needed */
+  mix-blend-mode: overlay;
+  /* or soft-light */
+}

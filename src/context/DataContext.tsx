@@ -20,6 +20,7 @@ interface DataContextType {
     updatePlan: (plan: StudyPlan) => void;
     deletePlan: (planId: string) => void;
     toggleTheme: () => void;
+    setBackgroundTheme: (id: string | undefined) => void;
     importData: (jsonData: string) => boolean;
     resetData: () => void;
 }
@@ -50,6 +51,18 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', data.themeMode || 'light');
     }, [data.themeMode]);
+
+    // Apply background theme color
+    useEffect(() => {
+        const bgTheme = data.themes.find(t => t.id === data.backgroundThemeId);
+        if (bgTheme) {
+            document.documentElement.style.setProperty('--global-theme-color', bgTheme.color);
+            document.documentElement.setAttribute('data-has-bg-theme', 'true');
+        } else {
+            document.documentElement.style.removeProperty('--global-theme-color');
+            document.documentElement.removeAttribute('data-has-bg-theme');
+        }
+    }, [data.backgroundThemeId, data.themes]);
 
     const updateUser = (userUpdates: Partial<User>) => {
         setData(prev => ({ ...prev, user: { ...prev.user, ...userUpdates } }));
@@ -138,6 +151,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }));
     };
 
+    const setBackgroundTheme = (id: string | undefined) => {
+        setData(prev => ({ ...prev, backgroundThemeId: id }));
+    };
+
     const importData = (jsonData: string): boolean => {
         try {
             const parsed = JSON.parse(jsonData) as AppData;
@@ -175,6 +192,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             updatePlan,
             deletePlan,
             toggleTheme,
+            setBackgroundTheme,
             importData,
             resetData
         }}>

@@ -3,7 +3,7 @@ import { useData } from '../context/DataContext';
 import { storage } from '../utils/storage';
 
 export const Settings = () => {
-    const { data, updateUser, toggleTheme, resetData, importData } = useData();
+    const { data, updateUser, toggleTheme, resetData, importData, setBackgroundTheme } = useData();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [userName, setUserName] = useState(data.user.name);
