@@ -11,7 +11,7 @@ body,
 }
 
 body {
-  background-color: var(--color-bg-base);
+  /* background-color: var(--color-bg-base); Moved to html in variables.css */
   color: var(--color-text-main);
   font-family: var(--font-family);
   margin: 0;
